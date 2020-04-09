@@ -16,8 +16,8 @@ This is a module containing various methods built manually. The methods in it in
 
 👤 **Phylis Chepchumba**
 
-- Github: [@phlylis05](https://github.com/phlylis05)
-- Linkedin: [PhylisChepchumba](https://linkedin.com/PhylisChepchumba)
+- Github: [@Phlylis05](https://github.com/phlylis05)
+- Linkedin: [Phylis Chepchumba](https://linkedin.com/PhylisChepchumba)
 
 ## 🤝 Contributing
 #### Start by:
