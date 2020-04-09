@@ -3,7 +3,7 @@ module Enumerable
     return to_enum(:my_each) unless block_given?
 
     i = 0
-    arr = self.to_a
+    arr = to_a
     while i < arr.length
       yield(arr[i])
       i += 1
