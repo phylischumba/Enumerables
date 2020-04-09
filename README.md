@@ -1,6 +1,6 @@
 # Enumerables
 Enumerables is one of the assignments in the Odin Project building blocks section mainly focused on advanced building blocks.
-This is a module containing various methods built manually. The methods in it include #each, #each_with_index, #all?, #any?, #none, #inject, #select, #map among others.
+This is a module containing various methods built manually. The methods in it include #each, #each_with_index, #all?, #any?, #count #none, #inject, #select, #map among others.
 
 ## Built With
 - Ruby
