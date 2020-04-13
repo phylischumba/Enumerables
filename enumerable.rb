@@ -3,9 +3,8 @@ module Enumerable
     return to_enum(:my_each) unless block_given?
 
     i = 0
-    arr = to_a
-    while i < arr.length
-      yield(arr[i])
+    while i < size
+      yield(size[i])
       i += 1
     end
   end
@@ -13,59 +12,54 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    (0...length).each do |i|
+    i = 0
+    while i < size
       yield(self[i], i)
+      i += 1
     end
+    self
   end
 
   def my_select
     return to_enum(:my_select) unless block_given?
 
-    new_selection = []
-    my_each do |x|
-      new_selection.push(x) if yield(x)
-    end
-    new_selection
+    my_arr = []
+    my_each { |i| my_arr.push(i) if yield(i) }
+    my_arr
   end
 
   def my_all?
     return to_enum(:my_all?) unless block_given?
 
-    new_selection = []
-    my_each do |n|
-      new_selection.push(n)
-      return false unless yield(n)
-    end
-    true
+    state = true
+    my_each { |i| state = false unless yield(i) }
+    state
   end
 
   def my_any?
     return to_enum(:my_any?) unless block_given?
 
-    arr = []
-    my_each do |x|
-      arr.push(x)
-      return true if yield(x)
+    state = false
+    my_each do |i|
+      state = true if yield(i)
+      break
     end
-    false
+    state
   end
 
   def my_none?
     return to_enum(:my_none?) unless block_given?
 
-    new_selection = []
-    my_each do |x|
-      new_selection.push(x)
-      return true if yield(x)
-    end
-    false
+    state = true
+    my_each { |i| state = false if yield(i) }
+    state
   end
 
   def my_count
     return to_enum(:my_count) unless block_given?
 
     total = 0
-    (0...length).each do |x|
+    my_each do |x|
       total += 1 if yield(self[x])
     end
     total
