@@ -1,12 +1,13 @@
 module Enumerable
   def my_each
-    return to_enum(:my_each) unless block_given?
+    # return to_enum(:my_each) unless block_given?
 
     i = 0
     while i < size
-      yield(size[i])
+      yield(self[i])
       i += 1
     end
+    self
   end
 
   def my_each_with_index
@@ -28,12 +29,17 @@ module Enumerable
     my_arr
   end
 
-  def my_all?
-    return to_enum(:my_all?) unless block_given?
+  def my_all?(*args)
 
-    state = true
-    my_each { |i| state = false unless yield(i) }
-    state
+    condition = true
+    if !args[0].nil?
+      my_each {|i| condition = false}
+    elsif !block_given?
+      my_each {|i| condition = false}
+    else
+      my_each { |i| condition = false unless yield(i) }
+    end
+    condition
   end
 
   def my_any?
@@ -94,3 +100,5 @@ module Enumerable
     my_inject { |total, k| return total * k }
   end
 end
+
+p %w[ant bear ca].my_none? {  }
