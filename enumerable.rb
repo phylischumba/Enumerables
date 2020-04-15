@@ -104,14 +104,3 @@ def multiply_els
 
   my_inject { |product, i| product * i }
 end
-
-# p ["mercy", "cate", "mercy"].my_each { |i| puts i }
-
-# p ['burner'].my_none? { |word| word.length >= 3 }
-# p [].my_count(&:even?)
-# p (1..7).my_inject { |product, n| product * n }
-# longest = %w[cat sheep bear].my_inject do |memo, word|
-#   memo.length > word.length ? memo : word
-# end
-# p longest
-# p (5..10).inject { |sum, n| sum + n }
