@@ -1,6 +1,6 @@
 module Enumerable
   def my_each
-    # return to_enum(:my_each) unless block_given?
+    return to_enum(:my_each) unless block_given?
 
     i = 0
     while i < size
@@ -94,7 +94,6 @@ module Enumerable
       arr[1..-1].my_each { |item| acc = yield(acc, item) }
     elsif args[0].class == Symbol
       acc = to_a[0]
-      # operation = args[0]
       arr[1..-1].my_each { |item| acc = acc.yield(total, item) }
     end
     acc
@@ -103,10 +102,10 @@ end
 def multiply_els
   return to_enum(:multiply_els) unless block_given?
 
-  my_inject(:*)
+  my_inject { |product, i| product * i }
 end
 
-# p [].my_each { |i| puts i }
+# p ["mercy", "cate", "mercy"].my_each { |i| puts i }
 
 # p ['burner'].my_none? { |word| word.length >= 3 }
 # p [].my_count(&:even?)
