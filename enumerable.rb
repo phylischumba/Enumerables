@@ -94,13 +94,13 @@ module Enumerable
       arr[1..-1].my_each { |item| acc = yield(acc, item) }
     elsif args[0].class == Symbol
       acc = to_a[0]
-      arr[1..-1].my_each { |item| acc = acc.yield(total, item) }
+      total = args[0]
+      arr[1..-1].my_each { |item| acc = acc.send(total, item) }
     end
     acc
   end
 end
-def multiply_els
-  return to_enum(:multiply_els) unless block_given?
 
-  my_inject { |product, i| product * i }
+def multiply_els(arr)
+  arr.my_inject { |product, i| product * i }
 end
