@@ -1,4 +1,4 @@
-module Enumerable
+module MyEnumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
@@ -29,14 +29,22 @@ module Enumerable
     my_arr
   end
 
-  def my_all?(*args)
+  def my_all?(args = nil)
     condition = true
-    if !args[0].nil?
-      my_each { |_i| condition = false }
-    elsif !block_given?
-      my_each { |_i| condition = false }
-    else
-      my_each { |i| condition = false unless yield(i) }
+    my_each do |i|
+      if condition
+        if args.is_a?(Class)
+          condition = i.is_a?(args) unless args.is_a?(Regexp)
+        elsif args.is_a?(Regexp)
+          condition = !i.match(args).nil? if args.is_a?(Regexp)
+        elsif args
+          condition = i == args
+        elsif block_given?
+          condition = false unless yield(i)
+        else
+          condition = false unless i
+        end
+      end
     end
     condition
   end
@@ -53,21 +61,18 @@ module Enumerable
     state
   end
 
-  def my_none?
-    return to_enum(:my_none?) unless block_given?
-
-    state = true
-    my_each { |i| state = false if yield(i) }
-    state
+  def my_none?(args = nil, &block)
+    !my_any?(args, &block)
   end
 
-  def my_count
-    return to_enum(:my_count) unless block_given?
-
+  def my_count(args = nil)
     total = 0
-    my_each do |i|
-      total += 1 if block_given? && yield(i)
-      total = size unless block_given?
+    if args
+      my_each { |i| total += 1 if i == num }
+    elsif !block_given?
+      total = size
+    elsif !args
+      my_each { |i| total += 1 if yield i }
     end
     total
   end
@@ -85,19 +90,17 @@ module Enumerable
   end
 
   def my_inject(*args)
-    arr = to_a
-    if !args.empty? && args[0].class != Symbol
-      acc = args[0]
-      arr.my_each { |item| acc = yield(acc, item) }
-    elsif args.empty?
-      acc = to_a[0]
-      arr[1..-1].my_each { |item| acc = yield(acc, item) }
-    elsif args[0].class == Symbol
-      acc = to_a[0]
-      total = args[0]
-      arr[1..-1].my_each { |item| acc = acc.send(total, item) }
+    array = is_a?(Range) ? to_a : self
+
+    argument = args[0] if args[0].is_a?(Integer)
+    operator = args[0].is_a?(Symbol) ? args[0] : args[1]
+
+    if operator
+      array.my_each { |i| argument = argument ? argument.send(operator, i) : i }
+      return argument
     end
-    acc
+    array.my_each { |i| argument = argument ? yield(argument, i) : i }
+    argument
   end
 end
 
