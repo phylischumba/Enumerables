@@ -2,30 +2,49 @@ module MyEnumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
+    array = is_a?(Range) ? to_a : self
     i = 0
-    while i < size
-      yield(self[i])
+    while i < array.length
+      yield(array[i])
       i += 1
     end
-    self
+    array
   end
 
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    i = 0
-    while i < size
-      yield(self[i], i)
-      i += 1
+    if is_a?(Range)
+      array = to_array
+      array.length.each do |i|
+        yield(array[i], i)
+      end
+    else
+      i = 0
+      while i < array.length
+        yield(array[i], i)
+        i += 1
+      end
     end
-    self
+    array
   end
 
   def my_select
-    return to_enum(:my_select) unless block_given?
-
-    my_arr = []
-    my_each { |i| my_arr.push(i) if yield(i) }
+    my_arr = self.class == Hash ? {} : []
+    if my_arr.class == Hash
+      my_each do |key, value|
+        my_arr[key] = value if !value.nil? && yield(key, value)
+      end
+    elsif is_a?(Range)
+      array = to_a
+      array.my_each do |element|
+        my_arr << element if yield(element)
+      end
+    else
+      my_each do |element|
+        my_arr << element if yield(element)
+      end
+    end
     my_arr
   end
 
@@ -68,7 +87,7 @@ module MyEnumerable
   def my_count(args = nil)
     total = 0
     if args
-      my_each { |i| total += 1 if i == num }
+      my_each { |i| total += 1 if i == args }
     elsif !block_given?
       total = size
     elsif !args
@@ -77,16 +96,27 @@ module MyEnumerable
     total
   end
 
-  def my_map(proc = nil)
-    return to_enum(:my_map) unless block_given? || proc.class == Proc
+  def my_map(proc)
+    my_arr = []
+    return my_map { |obj| obj } unless block_given?
 
-    mapped = []
-    if proc.class == Proc
-      my_each { |i| mapped << proc.call(i) }
-    elsif block_given?
-      my_each { |i| mapped << yield(i) }
+    if self.Class == Array
+      my_arr = []
+      my_each do |i|
+        my_arr << proc.call(self[i])
+      end
+    elsif self.Class == Hash
+      my_each do |key, value|
+        my_arr << proc.call(key, value)
+      end
+    elsif self.Class == Range
+      range_arr = to_a
+      my_arr = range_arr.size - 1
+      range_arr.length.times do |i|
+        my_arr << proc.call(range_arr[i])
+      end
     end
-    mapped
+    my_arr
   end
 
   def my_inject(*args)
