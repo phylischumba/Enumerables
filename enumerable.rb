@@ -16,7 +16,7 @@ module MyEnumerable
 
     if is_a?(Range)
       array = to_array
-      array.length.each do |i|
+      array.length.my_each do |i|
         yield(array[i], i)
       end
     else
@@ -40,10 +40,13 @@ module MyEnumerable
       array.my_each do |element|
         my_arr << element if yield(element)
       end
+    elsif !block_given?
+      return to_enum
     else
       my_each do |element|
         my_arr << element if yield(element)
       end
+
     end
     my_arr
   end
@@ -96,24 +99,27 @@ module MyEnumerable
     total
   end
 
-  def my_map(proc)
-    my_arr = []
-    return my_map { |obj| obj } unless block_given?
+  def my_map(proc = nil)
+    return to_enum(:my_map) unless block_given? || proc.class == Proc
 
-    if self.Class == Array
-      my_arr = []
+    my_arr = []
+    if proc.class == Proc
+      my_each { |i| my_arr << proc.call(i) }
+    elsif block_given?
+      my_each { |i| my_arr << yield(i) }
+    elsif self.Class == Range
+      range_arr = to_a
+      my_arr = range_arr.size - 1
+      range_arr.length.times do |i|
+        my_arr << proc.call(range_arr[i])
+      end
+    elsif self.Class == Array
       my_each do |i|
         my_arr << proc.call(self[i])
       end
     elsif self.Class == Hash
       my_each do |key, value|
         my_arr << proc.call(key, value)
-      end
-    elsif self.Class == Range
-      range_arr = to_a
-      my_arr = range_arr.size - 1
-      range_arr.length.times do |i|
-        my_arr << proc.call(range_arr[i])
       end
     end
     my_arr
