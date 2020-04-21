@@ -31,6 +31,7 @@ module MyEnumerable
 
   def my_select
     return to_enum(:my_select) unless block_given?
+
     my_arr = self.class == Hash ? {} : []
     if my_arr.class == Hash
       my_each do |key, value|
