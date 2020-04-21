@@ -1,4 +1,4 @@
-module MyEnumerable
+module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
@@ -12,21 +12,19 @@ module MyEnumerable
   end
 
   def my_each_with_index
-    return to_enum(:my_each_with_index) unless block_given?
+    return to_enum :my_each unless block_given?
 
-    if is_a?(Range)
-      array = to_array
-      array.length.my_each do |i|
-        yield(array[i], i)
+    i = 0
+    while i < size
+      if is_a? Array
+        yield self[i], i
+      elsif is_a? Hash
+        yield keys[i], self[keys[i]]
+      elsif is_a? Range
+        yield to_a[i], i
       end
-    else
-      i = 0
-      while i < array.length
-        yield(array[i], i)
-        i += 1
-      end
+      i += 1
     end
-    array
   end
 
   def my_select
