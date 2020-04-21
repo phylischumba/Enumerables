@@ -30,6 +30,7 @@ module MyEnumerable
   end
 
   def my_select
+    return to_enum(:my_select) unless block_given?
     my_arr = self.class == Hash ? {} : []
     if my_arr.class == Hash
       my_each do |key, value|
@@ -40,8 +41,6 @@ module MyEnumerable
       array.my_each do |element|
         my_arr << element if yield(element)
       end
-    elsif !block_given?
-      return to_enum
     else
       my_each do |element|
         my_arr << element if yield(element)
