@@ -28,25 +28,16 @@ module Enumerable
   end
 
   def my_select
-    return to_enum(:my_select) unless block_given?
-
-    my_arr = self.class == Hash ? {} : []
-    if my_arr.class == Hash
-      my_each do |key, value|
-        my_arr[key] = value if !value.nil? && yield(key, value)
-      end
-    elsif is_a?(Range)
-      array = to_a
-      array.my_each do |element|
-        my_arr << element if yield(element)
-      end
+    return to_enum :my_select unless block_given?
+    
+    if is_a? Array
+    results = []
+    my_each { |x| results << x if yield x }
     else
-      my_each do |element|
-        my_arr << element if yield(element)
-      end
-
+    results = {}
+    my_each { |y, z| results[y] = z if yield y, z }
     end
-    my_arr
+    results
   end
 
   def my_all?(args = nil)
