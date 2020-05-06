@@ -6,7 +6,7 @@ describe Enumerable do
   let(:num_range) { (1..5).to_a }
   let(:nil_arr) { [false, nil, false] }
   let(:str_arr) { %w[mangoes oranges apples] }
-  let(:mixed_arr) {[1, "two", 3, 4]}
+  let(:mixed_arr) { [1, 'two', 3, 4] }
   let(:multiply) do
     proc do |x|
       x * 3
