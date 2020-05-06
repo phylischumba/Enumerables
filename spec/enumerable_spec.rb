@@ -6,7 +6,7 @@ describe Enumerable do
   let(:num_range) { (1..5).to_a }
   let(:nil_arr) { [false, nil, false] }
   let(:str_arr) { %w[mangoes oranges apples] }
-
+  let(:mixed_arr) {[1, "two", 3, 4]}
   let(:multiply) do
     proc do |x|
       x * 3
@@ -79,6 +79,9 @@ describe Enumerable do
     it 'returns true if we dont pass block or argument and all the elements are true' do
       expect(num_arr.my_all?).to be true
     end
+    it 'returns true if all elements match Class passed as argument' do
+      expect(str_arr.my_all?(String)).to be true
+    end
     it 'returns true if an empty array is given' do
       expect([].my_all?).to be true
     end
@@ -99,6 +102,9 @@ describe Enumerable do
     end
     it 'returns true if none of the elements match expression passed as argument' do
       expect(num_arr.my_none?(/a/)).to be true
+    end
+    it 'returns true if none of the elements match Class passed as argument' do
+      expect(str_arr.my_none?(Integer)).to be true
     end
     it 'returns true if none of the elements are true if we dont pass block and argument' do
       expect(nil_arr.my_none?).to be true
@@ -123,6 +129,9 @@ describe Enumerable do
     end
     it 'returns true if any of the elements matches expression passed as argument' do
       expect(str_arr.my_any?(/a/)).to be true
+    end
+    it 'returns true if any of the elements match Class passed as argument' do
+      expect(str_arr.my_any?(String)).to be true
     end
     it 'returns true if we dont pass block and argument' do
       expect(num_arr.my_any?).to be true
