@@ -103,8 +103,8 @@ describe Enumerable do
     it 'returns true if none of the elements match expression passed as argument' do
       expect(num_arr.my_none?(/a/)).to be true
     end
-    it 'returns true if none of the elements match Class passed as argument' do
-      expect(str_arr.my_none?(Integer)).to be true
+    it 'returns true if none of the elements match the Class passed as argument' do
+      expect(str_arr.my_none?(Numeric)).to be true
     end
     it 'returns true if none of the elements are true if we dont pass block and argument' do
       expect(nil_arr.my_none?).to be true
@@ -164,7 +164,7 @@ describe Enumerable do
       expect(num_arr.my_count(&:even?)).to be 2
     end
     it 'returns an error if invoked on object other than enumerable' do
-      expect { 1.my_all? }.to raise_error(NoMethodError)
+      expect { 1.my_count? }.to raise_error(NoMethodError)
     end
   end
 
